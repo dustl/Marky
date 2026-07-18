@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>Marky</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/katex.min.css">
+</head>
+<body class="theme-light">
+
+  <!-- Toolbar -->
+  <header class="toolbar">
+    <div class="toolbar-left">
+      <span class="app-name">Marky</span>
+      <span class="toolbar-divider">|</span>
+      <button class="tool-btn" title="New (Ctrl+N)" data-action="new">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      </button>
+      <button class="tool-btn" title="Open (Ctrl+O)" data-action="open">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <button class="tool-btn" title="Save (Ctrl+S)" data-action="save">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      </button>
+    </div>
+    <div class="toolbar-center">
+      <span class="file-name" id="fileName">untitled.md</span>
+    </div>
+    <div class="toolbar-right">
+      <button class="tool-btn" title="Toggle outline (Ctrl+Shift+O)" data-action="outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
+      <span class="toolbar-divider">|</span>
+      <button class="tool-btn" title="Toggle theme (Ctrl+Shift+T)" data-action="theme">
+        <svg class="theme-icon-light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="theme-icon-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <span class="toolbar-divider">|</span>
+      <button class="tool-btn" title="Insert Template" id="templateBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      </button>
+      <div class="template-dropdown hidden" id="templateDropdown">
+        <div class="template-item" data-template="readme">README</div>
+        <div class="template-item" data-template="changelog">Changelog</div>
+        <div class="template-item" data-template="meeting">Meeting Notes</div>
+        <div class="template-item" data-template="blog">Blog Post</div>
+      </div>
+      <button class="tool-btn" title="Focus mode (Ctrl+Shift+F)" data-action="focus">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Search Bar -->
+  <div class="search-bar hidden" id="searchBar">
+    <div class="search-row">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search..." spellcheck="false">
+      <span class="search-count" id="searchCount"></span>
+      <button class="search-btn" id="searchPrev" title="Previous match (Shift+Enter)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="search-btn" id="searchNext" title="Next match (Enter)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="search-btn search-btn-toggle" id="searchToggleReplace" title="Toggle replace">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M8 3H3v5"/><path d="M21 8v13H3V8"/><path d="M9 14h6v5H9z"/></svg>
+      </button>
+      <button class="search-btn search-btn-close" id="searchClose" title="Close (Esc)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="search-row search-replace-row hidden" id="searchReplaceRow">
+      <input type="text" class="search-input" id="searchReplaceInput" placeholder="Replace..." spellcheck="false">
+      <button class="search-btn search-replace-btn" id="searchReplaceOne">Replace</button>
+      <button class="search-btn search-replace-btn" id="searchReplaceAll">Replace All</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-tabs">
+          <button class="sidebar-tab active" data-panel="files">Files</button>
+          <button class="sidebar-tab" data-panel="outline">Outline</button>
+        </div>
+      </div>
+      <div class="sidebar-panel" id="fileListPanel">
+        <button class="file-list-folder-btn" id="openFolderBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Open Folder
+        </button>
+        <div class="file-list" id="fileList">
+          <div class="file-list-empty">Open a folder to browse files</div>
+        </div>
+      </div>
+      <div class="sidebar-panel hidden" id="outlinePanel">
+        <div class="sidebar-body" id="outlineBody">
+          <div class="outline-empty">No headings</div>
+        </div>
+      </div>
+    </aside>
+    <div class="editor-wrapper">
+      <div class="focus-exit" id="focusExit" title="Exit focus mode (Esc)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <span>Exit focus</span>
+      </div>
+      <div class="editor" id="editor" contenteditable="true" spellcheck="false"></div>
+    </div>
+  </main>
+
+  <!-- Status Bar -->
+  <footer class="statusbar">
+    <div class="status-left">
+      <svg class="status-icon" width="14" height="14" viewBox="0 0 14 14">
+        <rect x="0" y="0" width="14" height="14" rx="3" fill="var(--text-tertiary)" opacity="0.15"/>
+        <path d="M 4 10 C 5.5 7, 6 9, 7.5 8 C 8.5 7.5, 9.5 8.5, 10.5 8" fill="none" stroke="var(--text-tertiary)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M 10.5 4 L 9 5.5 L 8.2 4.8 L 9.8 3.3 Z" fill="var(--text-tertiary)" opacity="0.6"/>
+      </svg>
+      <span class="status-item" id="statusFile">untitled.md</span>
+    </div>
+    <div class="status-right">
+      <span class="status-item" id="statusWords">0 words</span>
+      <span class="status-sep">·</span>
+      <span class="status-item" id="statusLines">0 lines</span>
+      <span class="status-sep">·</span>
+      <span class="status-item" id="statusChars">0 chars</span>
+      <span class="status-sep">·</span>
+      <span class="status-item" id="statusReadTime"></span>
+      <span class="status-sep">·</span>
+      <span class="status-item">UTF-8</span>
+      <span class="status-sep">·</span>
+      <span class="status-item" id="statusTheme">Light</span>
+    </div>
+  </footer>
+
+  <!-- Word Count Popup -->
+  <div class="wordcount-popup hidden" id="wordcountPopup">
+    <div class="wordcount-popup-row"><span>Words</span><span id="popupWords">0</span></div>
+    <div class="wordcount-popup-row"><span>Characters</span><span id="popupChars">0</span></div>
+    <div class="wordcount-popup-row"><span>Characters (no spaces)</span><span id="popupCharsNoSpace">0</span></div>
+    <div class="wordcount-popup-row"><span>Lines</span><span id="popupLines">0</span></div>
+    <div class="wordcount-popup-row"><span>Paragraphs</span><span id="popupParas">0</span></div>
+    <div class="wordcount-popup-row"><span>Reading time</span><span id="popupReadTime">0 min</span></div>
+  </div>
+
+  <!-- Floating Format Toolbar -->
+  <div class="float-toolbar hidden" id="floatToolbar">
+    <button class="float-toolbar-btn" data-format="bold" title="Bold (Ctrl+B)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
+    </button>
+    <button class="float-toolbar-btn" data-format="italic" title="Italic (Ctrl+I)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+    </button>
+    <button class="float-toolbar-btn" data-format="underline" title="Underline">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 0 0 12 0V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>
+    </button>
+    <button class="float-toolbar-btn" data-format="strikethrough" title="Strikethrough">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><path d="M16 6c0-1.5-1.5-3-4-3S8 4.5 8 6c0 2 2 3 4 4s4 2 4 4c0 1.5-1.5 3-4 3s-4-1.5-4-3"/></svg>
+    </button>
+    <button class="float-toolbar-btn" data-format="code" title="Inline Code">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    </button>
+    <button class="float-toolbar-btn" data-format="link" title="Insert Link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    </button>
+    <span class="float-toolbar-sep"></span>
+    <button class="float-toolbar-btn" data-format="table" title="Insert Table">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+    </button>
+  </div>
+
+  <!-- Shortcut Reference Modal -->
+  <div class="shortcut-modal hidden" id="shortcutModal">
+    <div class="shortcut-modal-backdrop" id="shortcutBackdrop"></div>
+    <div class="shortcut-modal-content">
+      <div class="shortcut-modal-header">
+        <span>Keyboard Shortcuts</span>
+        <button class="shortcut-modal-close" id="shortcutClose">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="shortcut-modal-body">
+        <div class="shortcut-group">
+          <div class="shortcut-group-title">File</div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+N</span><span class="shortcut-desc">New document</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+O</span><span class="shortcut-desc">Open file</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+S</span><span class="shortcut-desc">Save</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+Shift+S</span><span class="shortcut-desc">Save As</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+E</span><span class="shortcut-desc">Export HTML</span></div>
+        </div>
+        <div class="shortcut-group">
+          <div class="shortcut-group-title">Edit</div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+Z</span><span class="shortcut-desc">Undo</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+Shift+Z</span><span class="shortcut-desc">Redo</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+F</span><span class="shortcut-desc">Search &amp; Replace</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Tab</span><span class="shortcut-desc">Indent (2 spaces)</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+/</span><span class="shortcut-desc">Shortcut reference</span></div>
+        </div>
+        <div class="shortcut-group">
+          <div class="shortcut-group-title">View</div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+Shift+T</span><span class="shortcut-desc">Toggle theme</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+Shift+O</span><span class="shortcut-desc">Toggle outline</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+Shift+F</span><span class="shortcut-desc">Focus mode</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Esc</span><span class="shortcut-desc">Exit focus mode</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+Shift+W</span><span class="shortcut-desc">Typewriter mode</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+Shift+.</span><span class="shortcut-desc">Fullscreen</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Cmd+/</span><span class="shortcut-desc">This shortcut reference</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Context Menu -->
+  <div class="context-menu hidden" id="contextMenu">
+    <div class="context-menu-item" data-menu-action="bold">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
+      <span>Bold</span>
+    </div>
+    <div class="context-menu-item" data-menu-action="italic">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+      <span>Italic</span>
+    </div>
+    <div class="context-menu-item" data-menu-action="underline">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 0 0 12 0V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>
+      <span>Underline</span>
+    </div>
+    <div class="context-menu-item" data-menu-action="strikethrough">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><path d="M16 6c0-1.5-1.5-3-4-3S8 4.5 8 6c0 2 2 3 4 4s4 2 4 4c0 1.5-1.5 3-4 3s-4-1.5-4-3"/></svg>
+      <span>Strikethrough</span>
+    </div>
+    <div class="context-menu-item" data-menu-action="code">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <span>Code</span>
+    </div>
+    <div class="context-menu-separator"></div>
+    <div class="context-menu-item" data-menu-action="insert-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span>Insert Link</span>
+    </div>
+    <div class="context-menu-item" data-menu-action="insert-math">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h3l4-14 4 14h3"/><path d="M4 12h16"/></svg>
+      <span>Insert Math</span>
+    </div>
+    <div class="context-menu-item" data-menu-action="insert-table">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+      <span>Insert Table</span>
+    </div>
+    <div class="context-menu-separator"></div>
+    <div class="context-menu-item" data-menu-action="insert-image">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span>Insert Image</span>
+    </div>
+    <div class="context-menu-separator table-context-item hidden"></div>
+    <div class="context-menu-item table-context-item hidden" data-menu-action="add-row-above">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v6H3z"/><path d="M12 13v8"/><path d="M8 17l4-4 4 4"/></svg>
+      <span>Add Row Above</span>
+    </div>
+    <div class="context-menu-item table-context-item hidden" data-menu-action="add-row-below">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15h18v6H3z"/><path d="M12 3v8"/><path d="M8 7l4 4 4-4"/></svg>
+      <span>Add Row Below</span>
+    </div>
+    <div class="context-menu-item table-context-item hidden" data-menu-action="add-column-left">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h6v18H3z"/><path d="M13 12h8"/><path d="M17 8l4 4-4 4"/></svg>
+      <span>Add Column Left</span>
+    </div>
+    <div class="context-menu-item table-context-item hidden" data-menu-action="add-column-right">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v18h-6z"/><path d="M3 12h8"/><path d="M7 8l-4 4 4 4"/></svg>
+      <span>Add Column Right</span>
+    </div>
+    <div class="context-menu-separator table-context-item hidden"></div>
+    <div class="context-menu-item table-context-item hidden" data-menu-action="align-row-left">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h12M3 9h18M3 13h12M3 17h18"/><path d="M3 3v18"/></svg>
+      <span>Align Row Left</span>
+    </div>
+    <div class="context-menu-item table-context-item hidden" data-menu-action="align-row-center">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h12M3 9h18M3 13h12M3 17h18"/><path d="M12 3v18"/></svg>
+      <span>Align Row Center</span>
+    </div>
+    <div class="context-menu-item table-context-item hidden" data-menu-action="align-column-left">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14M5 9h14M5 15h14M5 21h14"/><path d="M3 3v18"/></svg>
+      <span>Align Column Left</span>
+    </div>
+    <div class="context-menu-item table-context-item hidden" data-menu-action="align-column-center">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14M5 9h14M5 15h14M5 21h14"/><path d="M12 3v18"/></svg>
+      <span>Align Column Center</span>
+    </div>
+  </div>
+
+  <!-- Table Grid Picker -->
+  <div class="table-grid-picker hidden" id="tableGridPicker">
+    <div class="table-grid-label" id="gridLabel">1 x 1</div>
+    <div class="table-grid" id="tableGrid"></div>
+  </div>
+
+  <!-- Code Language Picker -->
+  <div class="code-lang-picker hidden" id="codeLangPicker">
+    <div class="code-lang-item" data-lang="">None (plain text)</div>
+    <div class="code-lang-item" data-lang="javascript">JavaScript</div>
+    <div class="code-lang-item" data-lang="typescript">TypeScript</div>
+    <div class="code-lang-item" data-lang="python">Python</div>
+    <div class="code-lang-item" data-lang="html">HTML</div>
+    <div class="code-lang-item" data-lang="css">CSS</div>
+    <div class="code-lang-item" data-lang="scss">SCSS</div>
+    <div class="code-lang-item" data-lang="less">Less</div>
+    <div class="code-lang-item" data-lang="java">Java</div>
+    <div class="code-lang-item" data-lang="go">Go</div>
+    <div class="code-lang-item" data-lang="rust">Rust</div>
+    <div class="code-lang-item" data-lang="c">C</div>
+    <div class="code-lang-item" data-lang="cpp">C++</div>
+    <div class="code-lang-item" data-lang="csharp">C#</div>
+    <div class="code-lang-item" data-lang="swift">Swift</div>
+    <div class="code-lang-item" data-lang="kotlin">Kotlin</div>
+    <div class="code-lang-item" data-lang="ruby">Ruby</div>
+    <div class="code-lang-item" data-lang="php">PHP</div>
+    <div class="code-lang-item" data-lang="sql">SQL</div>
+    <div class="code-lang-item" data-lang="shell">Shell/Bash</div>
+    <div class="code-lang-item" data-lang="json">JSON</div>
+    <div class="code-lang-item" data-lang="xml">XML</div>
+    <div class="code-lang-item" data-lang="yaml">YAML</div>
+    <div class="code-lang-item" data-lang="markdown">Markdown</div>
+    <div class="code-lang-item" data-lang="docker">Docker</div>
+    <div class="code-lang-item" data-lang="graphql">GraphQL</div>
+    <div class="code-lang-item" data-lang="lua">Lua</div>
+    <div class="code-lang-item" data-lang="r">R</div>
+    <div class="code-lang-item" data-lang="dart">Dart</div>
+    <div class="code-lang-item" data-lang="haskell">Haskell</div>
+    <div class="code-lang-item" data-lang="elixir">Elixir</div>
+    <div class="code-lang-item" data-lang="julia">Julia</div>
+  </div>
+
+  <!-- Math Formula Dialog -->
+  <div class="math-dialog hidden" id="mathDialog">
+    <div class="math-dialog-backdrop" id="mathBackdrop"></div>
+    <div class="math-dialog-content">
+      <div class="math-dialog-header">
+        <span>Insert Math Formula</span>
+        <button class="math-dialog-close" id="mathClose">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="math-dialog-body">
+        <textarea class="math-input" id="mathInput" placeholder="Type LaTeX formula here... e.g. \sum_{i=0}^n i^2" spellcheck="false"></textarea>
+        <div class="math-preview" id="mathPreview">
+          <span class="math-prompt">Formula preview will appear here</span>
+        </div>
+      </div>
+      <div class="math-dialog-footer">
+        <button class="math-btn math-btn-inline" id="mathInsertInline">Insert Inline ($)</button>
+        <button class="math-btn math-btn-display" id="mathInsertDisplay">Insert Display ($$)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Link Dialog -->
+  <div class="math-dialog hidden" id="linkDialog">
+    <div class="math-dialog-backdrop" id="linkBackdrop"></div>
+    <div class="math-dialog-content">
+      <div class="math-dialog-header">
+        <span>Insert Link</span>
+        <button class="math-dialog-close" id="linkClose">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="math-dialog-body">
+        <div class="link-dialog-field">
+          <label class="link-dialog-label" for="linkTextInput">Text</label>
+          <input type="text" class="link-dialog-input" id="linkTextInput" placeholder="Display text" spellcheck="false">
+        </div>
+        <div class="link-dialog-field">
+          <label class="link-dialog-label" for="linkUrlInput">URL</label>
+          <input type="text" class="link-dialog-input" id="linkUrlInput" placeholder="https://example.com" spellcheck="false">
+        </div>
+      </div>
+      <div class="math-dialog-footer">
+        <button class="math-btn" id="linkCancel">Cancel</button>
+        <button class="math-btn math-btn-inline" id="linkInsert">Insert Link</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/vendor/marked.min.js"></script>
+  <script src="js/vendor/highlight.bundle.js"></script>
+  <script src="js/vendor/katex.min.js"></script>
+  <script src="js/vendor/katex-auto-render.min.js"></script>
+  <script src="js/vendor/mermaid.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+{
+  "name": "marky",
+  "version": "1.0.0",
+  "description": "简洁优雅的 Markdown 编辑器 — Inspired by Typora",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder build --mac",
+    "build:dir": "electron-builder build --mac --dir",
+    "build:win": "electron-builder build --win --x64",
+    "build:win:dir": "electron-builder build --win --x64 --dir"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "highlight.js": "^11.10.0",
+    "katex": "^0.17.0",
+    "marked": "^15.0.0",
+    "mermaid": "^11.16.0",
+    "ws": "^8.21.0"
+  },
+  "build": {
+    "appId": "com.marky.editor",
+    "productName": "Marky",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*"
+    ],
+    "asar": true,
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "${productName}-${version}-win-${arch}.${ext}"
+    },
+    "fileAssociations": [
+      {
+        "ext": "md",
+        "name": "Markdown",
+        "description": "Markdown document",
+        "role": "Editor"
+      },
+      {
+        "ext": "markdown",
+        "name": "Markdown",
+        "description": "Markdown document",
+        "role": "Editor"
+      }
+    ]
+  }
+}
