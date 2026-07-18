@@ -1,6 +1,6 @@
 # Marky
 
-> 简洁而优雅的 Markdown 编辑器 — Inspired by Typora
+> 简洁而优雅的 Markdown 编辑器 
 
 Marky 是一款为写作而生的 Markdown 编辑器。它融合了所见即所得的流畅体验与纯文本的极致控制力，让创作者专注于内容本身，而非工具。
 
